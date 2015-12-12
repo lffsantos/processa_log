@@ -38,6 +38,7 @@ class SocketServer(object):
                                     if dados.get("command") == "reader":
                                         self.read_file(dados["file"])
                                     elif dados.get("command") == "write":
+                                        print("write")
                                         self.write_file(dados["file"], dados["content"])
                             except:
                                 self.conn.close()
