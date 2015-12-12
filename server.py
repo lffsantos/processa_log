@@ -54,9 +54,9 @@ class SocketServer(object):
     def read_file(self, file):
         with open(file, 'r') as line:
             for l in line:
-                self.queue.put_nowait(0)
                 self.conn.sendall(l.encode())
 
+        self.queue.put_nowait(0)
 
     def write_file(self, file_path, content):
         file = open(file_path, "a")
