@@ -1,6 +1,5 @@
 import socket
 import json
-import _thread
 import traceback
 from queue import Queue, Empty
 import time
@@ -16,7 +15,6 @@ class SocketServer(object):
         self.conn, addr = self.sock.accept()
         self.queue = Queue()
 
-
     def run(self):
         rest_msg = ""
         try:
@@ -26,7 +24,7 @@ class SocketServer(object):
                     time.sleep(3)
                     print("stop")
                     self.conn.sendall("stop".encode())
-                    # self.conn, addr = self.sock.accept()
+                    self.conn, addr = self.sock.accept()
                 except Empty:
                     dados= self.conn.recv(1024)
                     if dados:
@@ -38,9 +36,9 @@ class SocketServer(object):
                                 dados = json.loads(data)
                                 if dados:
                                     if dados.get("command") == "reader":
-                                        _thread.start_new_thread(self.read_file, (dados["file"],))
+                                        self.read_file(dados["file"])
                                     elif dados.get("command") == "write":
-                                        _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
+                                        self.write_file(dados["file"], dados["content"])
                             except:
                                 print(data)
                                 traceback.format_exc()

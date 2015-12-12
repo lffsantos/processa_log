@@ -34,7 +34,7 @@ class LogProcessor(object):
         print("iniciando processamento dos logs")
 
         def run(num_server):
-            _thread.start_new_thread(self.read_log(num_server))
+            self.read_log(num_server)
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             for num_server, ip_server in self.servers.items():
