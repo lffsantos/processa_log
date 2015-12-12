@@ -30,16 +30,18 @@ class SocketServer(object):
                             dados = json.loads(data)
                             if dados:
                                 if dados.get("command") == "reader":
+                                    self.queue.put_nowait(0)
                                     _thread.start_new_thread(self.read_file, (dados["file"],))
                                 elif dados.get("command") == "write":
                                     print("write")
-                                    _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
                                     self.queue.put_nowait(0)
+                                    _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
                         except:
                             self.conn.close()
                             print(traceback.format_exc())
                 try:
                     item = self.queue.get_nowait()
+                    print(item)
                 except Empty:
                     time.sleep(3)
                     print("stop")
@@ -53,9 +55,8 @@ class SocketServer(object):
     def read_file(self, file):
         with open(file, 'r') as line:
             for l in line:
+                self.queue.put_nowait(0)
                 self.conn.sendall(l.encode())
-
-        self.queue.put_nowait(0)
 
 
     def write_file(self, file_path, content):
