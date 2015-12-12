@@ -26,7 +26,8 @@ class SocketServer(object):
                     time.sleep(3)
                     print("stop")
                     self.conn.sendall("stop".encode())
-                    # self.conn, addr = self.sock.accept()
+                    print("wait_connection")
+                    self.conn, addr = self.sock.accept()
                 except Empty:
                     dados= self.conn.recv(1024)
                     if dados:
