@@ -60,6 +60,7 @@ class SocketServer(object):
     def write_file(self, file_path, content):
         file = open(file_path, "a")
         file.write(content + "\n")
+        print(content)
         file.close()
 
 
