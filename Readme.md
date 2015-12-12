@@ -5,8 +5,12 @@ Python Version 3.5
  - Nas máquinas aonde estão armazedados os logs devera ser executado o arquivo "server.py"  
  - Isso irá deixar o programa para executando no servidor para realizar a leitura e escrita de logs  
  
-  >>> python server.py
+  <code>>>> python server.py</code>
+
+ - Após os servidores estarem executando, escolha uma máquina, pode ser a mesma onde estão rodando os servidores ou outra, e execute o seguinte comando:
  
+  <code>>>> python processa_log/log_processor.py -s "IPSERVER_1,IPSERVER_2"</code>  
+  *substitua o IPSERVER_N, pelo endereço IP das máquinas
  
 ###Processador de Logs:
 
