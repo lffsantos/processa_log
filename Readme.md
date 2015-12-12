@@ -9,7 +9,7 @@ Python Version 3.5
 
  - Após os servidores estarem executando, escolha uma máquina, pode ser a mesma onde estão rodando os servidores ou outra, e execute o seguinte comando:
  
-  <code>>>> python processa_log/log_processor.py -s "IPSERVER_1,IPSERVER_2"</code>  
+  <code>>>> python log_processor.py -s "IPSERVER_1,IPSERVER_2"</code>  
   *substitua o IPSERVER_N, pelo endereço IP das máquinas
  
 ###Processador de Logs:
