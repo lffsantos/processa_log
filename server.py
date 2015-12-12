@@ -39,6 +39,7 @@ class SocketServer(object):
                             self.conn.close()
                             print(traceback.format_exc())
                 try:
+                    print("oi")
                     item = self.queue.get_nowait()
                     print(item)
                 except Empty:
