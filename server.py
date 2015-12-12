@@ -22,6 +22,7 @@ class SocketServer(object):
             while True:
                 dados= self.conn.recv(1024)
                 if dados:
+                    self.queue.put_nowait(0)
                     data_list = (rest_msg + dados.decode()).split("\n")
                     if len(data_list) > 1:
                         rest_msg = data_list.pop()
@@ -30,11 +31,10 @@ class SocketServer(object):
                             dados = json.loads(data)
                             if dados:
                                 if dados.get("command") == "reader":
-                                    self.queue.put_nowait(0)
                                     _thread.start_new_thread(self.read_file, (dados["file"],))
                                 elif dados.get("command") == "write":
-                                    self.queue.put_nowait(0)
-                                    _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
+                                    self.write_file(dados["file"], dados["content"])
+                                    # _thread.start_new_thread(self.write_file, (,))
                         except:
                             self.conn.close()
                             print(traceback.format_exc())
