@@ -3,6 +3,7 @@ import json
 import traceback
 from queue import Queue, Empty
 import time
+import _thread
 
 class SocketServer(object):
 
@@ -36,10 +37,11 @@ class SocketServer(object):
                                 dados = json.loads(data)
                                 if dados:
                                     if dados.get("command") == "reader":
-                                        self.read_file(dados["file"])
+                                        _thread.start_new_thread(self.read_file, (dados["file"],))
                                     elif dados.get("command") == "write":
                                         print("write")
-                                        self.write_file(dados["file"], dados["content"])
+                                        _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
+                                        self.queue.put_nowait(0)
                             except:
                                 self.conn.close()
                                 print(traceback.format_exc())
