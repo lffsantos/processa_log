@@ -1,3 +1,4 @@
+#coding:utf-8
 import concurrent.futures
 import socket
 import _thread
@@ -5,15 +6,18 @@ import json
 from collections import defaultdict
 from uuid import UUID
 from queue import Queue, Empty
+import argparse
 
 __author__ = 'lucas'
 
+step = 0
 
 class LogProcessor(object):
 
-    def __init__(self, servers):
+    def __init__(self, servers, log_dir):
         self.servers = servers
-        self.path_log = "/tmp/[USERID]"
+        self.path_save_log = "/tmp/[USERID]"
+        self.log_dir = log_dir
         self.cookies = defaultdict(list)
         self.queue = Queue()
 
@@ -22,7 +26,7 @@ class LogProcessor(object):
         self._socket_list = {}
         for k, v in self.servers.items():
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect((v, 9999))
+            sock.connect((v, 9998))
             self._socket_list[k] = sock
         print("conexão realizada!")
 
@@ -41,7 +45,7 @@ class LogProcessor(object):
             try:
                 item = self.queue.get_nowait()
                 count +=1
-                if count == len(servers):
+                if count == len(self.servers):
                     break
             except Empty:
                 pass
@@ -50,7 +54,7 @@ class LogProcessor(object):
 
 
     def read_log(self, num_server):
-        self._socket_list[num_server].sendall(json.dumps({"command":"reader","file":"logs/log.txt"}).encode())
+        self._socket_list[num_server].sendall(json.dumps({"command":"reader","file":self.log_dir}).encode())
         rest_string = ""
         while True:
             data = self._socket_list[num_server].recv(1024)
@@ -70,44 +74,44 @@ class LogProcessor(object):
 
 
     def write_user_log(self, user_id, data):
+        global step
         data = {
             "command":"write",
-            "file":self.path_log.replace("[USERID]",user_id),
+            "file":self.path_save_log.replace("[USERID]",user_id),
             "content": data
         }
-        print("enviando")
+
+        step +=1
+        if step%100 == 0:
+            print("write_log...")
         self._socket_list[self.get_number_server_save_log(user_id)].sendall(json.dumps(data).encode()+b'\n')
-        print("-----")
 
     def get_number_server_save_log(self, user_id):
 
         token = int(UUID(user_id))%len(self.servers)
         return token
 
-    def __close_sockets(self):
-        for list in self._socket_list:
-            for sock in list:
-                try:
-                    sock.close()
-                except:
-                    pass
-
 
 if __name__ == '__main__':
 
-    # servers = {
-    #     0: 'localhost',
-    #     1: '52.90.110.61',
-    #     3: '52.90.110.40',
-    #     4: '52.90.114.235'
-    # }
-    servers = {
-        0: '52.90.110.61',
-        1: '54.152.179.63'
-    }
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--servers", type=str, required=True,
+                        help="List of Servers to collect log. \n ex:\"teste1,teste2\"")
+    parser.add_argument("-ld", "--log_dir", default="logs/log.txt",
+                        help="location of log")
 
-    log = LogProcessor(servers)
+    args = parser.parse_args()
+    list_servers = args.servers.split(",")
+    print(list_servers)
+    print("localização dos logs: " + args.log_dir)
+    servers = {}
+
+    for i in range(0,len(list_servers)):
+        servers[i] = list_servers[i]
+
+    log = LogProcessor(servers, args.log_dir)
     log.start_connections()
     log.start()
+
 
 

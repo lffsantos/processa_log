@@ -9,8 +9,7 @@ class SocketServer(object):
 
     def __init__(self):
         self.host = "0.0.0.0"
-        self.port = 9999
-
+        self.port = 9998
         self.sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind((self.host, self.port))
         self.sock.listen(10)
@@ -70,5 +69,8 @@ class SocketServer(object):
 if __name__ == '__main__':
 
     print("Server Runner...")
-    conn = SocketServer()
-    conn.run()
+    try:
+        conn = SocketServer()
+        conn.run()
+    finally:
+        conn.sock.close()
