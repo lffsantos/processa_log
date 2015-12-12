@@ -16,10 +16,6 @@ class SocketServer(object):
         self.conn, addr = self.sock.accept()
         self.queue = Queue()
 
-    def create_conn_sock(self, server):
-        s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((self.host,self.port))
-        return s
 
     def run(self):
         rest_msg = ""
@@ -71,6 +67,7 @@ if __name__ == '__main__':
     print("Server Runner...")
     try:
         conn = SocketServer()
+        print("client connected")
         conn.run()
     finally:
         conn.sock.close()
