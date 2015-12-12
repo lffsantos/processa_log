@@ -15,6 +15,7 @@ class SocketServer(object):
         self.sock.listen(10)
         self.conn, addr = self.sock.accept()
         self.queue = Queue()
+        self.count = 0
 
     def run(self):
         rest_msg = ""
@@ -39,14 +40,19 @@ class SocketServer(object):
                         except:
                             self.conn.close()
                             print(traceback.format_exc())
-                try:
-                    item = self.queue.get_nowait()
-                    print(item)
-                except Empty:
-                    time.sleep(3)
-                    print("stop")
-                    self.conn.sendall("stop".encode())
-                    self.conn, addr = self.sock.accept()
+
+                if self.count == 2:
+                        self.conn.sendall("stop".encode())
+                        self.conn, addr = self.sock.accept()
+                # try:
+                #
+                #     item = self.queue.get_nowait()
+                #     print(item)
+                # except Empty:
+                #     time.sleep(3)
+                #     print("stop")
+                #     self.conn.sendall("stop".encode())
+                #     self.conn, addr = self.sock.accept()
         except:
             self.conn.close()
             print(traceback.format_exc())
@@ -56,7 +62,8 @@ class SocketServer(object):
         with open(file, 'r') as line:
             for l in line:
                 self.conn.sendall(l.encode())
-                self.queue.put_nowait(0)
+
+        self.count +=1
 
 
     def write_file(self, file_path, content):
