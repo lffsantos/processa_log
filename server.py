@@ -22,7 +22,7 @@ class SocketServer(object):
             while True:
                 dados= self.conn.recv(1024)
                 if dados:
-                    self.queue.put_nowait(0)
+                    # self.queue.put_nowait(0)
                     data_list = (rest_msg + dados.decode()).split("\n")
                     if len(data_list) > 1:
                         rest_msg = data_list.pop()
@@ -56,7 +56,7 @@ class SocketServer(object):
             for l in line:
                 self.conn.sendall(l.encode())
 
-        self.queue.put_nowait(0)
+        # self.queue.put_nowait(0)
 
     def write_file(self, file_path, content):
         file = open(file_path, "a")
