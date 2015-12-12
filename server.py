@@ -40,8 +40,7 @@ class SocketServer(object):
                                     elif dados.get("command") == "write":
                                         self.write_file(dados["file"], dados["content"])
                             except:
-                                print(data)
-                                traceback.format_exc()
+                                print(traceback.format_exc())
 
         except:
             print(traceback.format_exc())
