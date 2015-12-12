@@ -33,7 +33,6 @@ class SocketServer(object):
                                     self.queue.put_nowait(0)
                                     _thread.start_new_thread(self.read_file, (dados["file"],))
                                 elif dados.get("command") == "write":
-                                    print("write")
                                     self.queue.put_nowait(0)
                                     _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
                         except:
@@ -62,7 +61,6 @@ class SocketServer(object):
     def write_file(self, file_path, content):
         file = open(file_path, "a")
         file.write(content + "\n")
-        print(content)
         file.close()
 
 
