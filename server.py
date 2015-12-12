@@ -40,11 +40,14 @@ class SocketServer(object):
                                     elif dados.get("command") == "write":
                                         self.write_file(dados["file"], dados["content"])
                             except:
+                                self.conn.close()
                                 print(traceback.format_exc())
 
+
         except:
-            print(traceback.format_exc())
             self.conn.close()
+            print(traceback.format_exc())
+
 
     def read_file(self, file):
         with open(file, 'r') as line:
