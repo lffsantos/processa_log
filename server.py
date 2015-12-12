@@ -52,11 +52,11 @@ class SocketServer(object):
 
 
     def read_file(self, file):
+        self.queue.put_nowait(0)
         with open(file, 'r') as line:
             for l in line:
                 self.conn.sendall(l.encode())
 
-        # self.queue.put_nowait(0)
 
     def write_file(self, file_path, content):
         file = open(file_path, "a")
