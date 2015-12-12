@@ -22,6 +22,7 @@ class SocketServer(object):
         try:
             while True:
                 dados= self.conn.recv(1024)
+                print(self.count)
                 if dados:
                     # self.queue.put_nowait(0)
                     data_list = (rest_msg + dados.decode()).split("\n")
