@@ -40,7 +40,6 @@ class SocketServer(object):
                             self.conn.close()
                             print(traceback.format_exc())
                 try:
-                    print("oi")
                     item = self.queue.get_nowait()
                     print(item)
                 except Empty:
@@ -57,6 +56,7 @@ class SocketServer(object):
         with open(file, 'r') as line:
             for l in line:
                 self.conn.sendall(l.encode())
+                self.queue.put_nowait(0)
 
 
     def write_file(self, file_path, content):
