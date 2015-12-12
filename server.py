@@ -51,6 +51,7 @@ class SocketServer(object):
         with open(file, 'r') as line:
             for l in line:
                 self.conn.sendall(l.encode())
+                self.conn, addr = self.sock.accept()
 
         self.queue.put_nowait(0)
 
