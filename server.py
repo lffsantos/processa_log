@@ -20,33 +20,31 @@ class SocketServer(object):
         rest_msg = ""
         try:
             while True:
+                dados= self.conn.recv(1024)
+                if dados:
+                    data_list = (rest_msg + dados.decode()).split("\n")
+                    if len(data_list) > 1:
+                        rest_msg = data_list.pop()
+                    for data in data_list:
+                        try:
+                            dados = json.loads(data)
+                            if dados:
+                                if dados.get("command") == "reader":
+                                    _thread.start_new_thread(self.read_file, (dados["file"],))
+                                elif dados.get("command") == "write":
+                                    print("write")
+                                    _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
+                                    self.queue.put_nowait(0)
+                        except:
+                            self.conn.close()
+                            print(traceback.format_exc())
                 try:
                     item = self.queue.get_nowait()
+                except Empty:
                     time.sleep(3)
                     print("stop")
                     self.conn.sendall("stop".encode())
                     self.conn, addr = self.sock.accept()
-                except Empty:
-                    dados= self.conn.recv(1024)
-                    if dados:
-                        data_list = (rest_msg + dados.decode()).split("\n")
-                        if len(data_list) > 1:
-                            rest_msg = data_list.pop()
-                        for data in data_list:
-                            try:
-                                dados = json.loads(data)
-                                if dados:
-                                    if dados.get("command") == "reader":
-                                        _thread.start_new_thread(self.read_file, (dados["file"],))
-                                    elif dados.get("command") == "write":
-                                        print("write")
-                                        _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
-                                        self.queue.put_nowait(0)
-                            except:
-                                self.conn.close()
-                                print(traceback.format_exc())
-
-
         except:
             self.conn.close()
             print(traceback.format_exc())
