@@ -5,6 +5,8 @@ from queue import Queue, Empty
 import time
 import _thread
 
+count = 0
+
 class SocketServer(object):
 
     def __init__(self):
@@ -18,6 +20,7 @@ class SocketServer(object):
         self.count = 0
 
     def run(self):
+        global count
         rest_msg = ""
         try:
             while True:
@@ -33,7 +36,6 @@ class SocketServer(object):
                             dados = json.loads(data)
                             if dados:
                                 if dados.get("command") == "reader":
-                                    self.queue.put_nowait(0)
                                     _thread.start_new_thread(self.read_file, (dados["file"],))
                                 elif dados.get("command") == "write":
                                     self.write_file(dados["file"], dados["content"])
@@ -42,7 +44,7 @@ class SocketServer(object):
                             self.conn.close()
                             print(traceback.format_exc())
 
-                if self.count == 2:
+                if count == 2:
                         self.conn.sendall("stop".encode())
                         self.conn, addr = self.sock.accept()
                 # try:
@@ -60,11 +62,12 @@ class SocketServer(object):
 
 
     def read_file(self, file):
+        global count
         with open(file, 'r') as line:
             for l in line:
                 self.conn.sendall(l.encode())
 
-        self.count +=1
+        count +=1
 
 
     def write_file(self, file_path, content):
