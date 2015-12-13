@@ -26,7 +26,6 @@ class SocketServer(object):
                     time.sleep(3)
                     print("stop")
                     self.conn.sendall("stop".encode())
-                    # self.conn, addr = self.sock.accept()
                 except Empty:
                     dados= self.conn.recv(1024)
                     if dados:
@@ -42,8 +41,7 @@ class SocketServer(object):
                                     elif dados.get("command") == "write":
                                         _thread.start_new_thread(self.write_file, (dados["file"], dados["content"],))
                             except:
-                                print(data)
-                                traceback.format_exc()
+                                print(traceback.format_exc())
 
         except:
             print(traceback.format_exc())
