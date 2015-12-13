@@ -11,6 +11,14 @@ Python Version 3.5
  
   <code>>>> python log_processor.py -s "IPSERVER_1,IPSERVER_2"</code>  
   *substitua o IPSERVER_N, pelo endereço IP das máquinas
+  
+  Para passar o endereço do log para leitura informe:
+  <code>>>> python log_processor.py -s "IPSERVER_1,IPSERVER_2" -ld "LOG_DIR"</code>  
+
+  Para ver os parâmetros
+  <code>>>> python log_processor.py --help</code>  
+  
+ 
  
 ###Processador de Logs:
 
